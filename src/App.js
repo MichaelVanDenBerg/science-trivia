@@ -17,16 +17,20 @@ const GlobalStyle = createGlobalStyle`
   ${styledSanitize}
 
   body {
-    background: rgb(2,0,36);
-    background: linear-gradient(to right, #0f0c29, #24243e, #302b63, #24243e, #0f0c29);
     font-family: 'Open Sans', sans-serif;
+    color: #fffafa;
+    background: rgb(2,0,36);
+    background: linear-gradient(to right, #0f0c29, #24243e, #0f0c29);
   }
 `;
 
 // Main site container.
 const SiteWrapper = styled.div`
-  min-width: 100vw;
+  margin: 0 auto;
+  max-width: 820px;
   min-height: 100vh;
 `;
+
+
 
 export default App;

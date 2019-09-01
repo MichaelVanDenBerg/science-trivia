@@ -23,8 +23,7 @@ const Welcome = props => {
     }
 
     // Initiate urlConstructor and change page.
-    const getStarted = (e) => {
-        e.preventDefault();
+    const getStarted = () => {
         urlConstructor();
         //props.history.push("/trivia/1");
     }
@@ -59,13 +58,13 @@ const Welcome = props => {
 
     // Get data from the API. Callback function.
     useEffect(() => {
-        if (data) {
+        if (data.length > 0) {
             function prepareQuestions() {
                 console.log("asdada", data);
             }
             prepareQuestions(data);
         }
-    }, [data, props.history]);
+    }, [data]);
 
     // A list of trivia categories.
     const triviaCategories = [

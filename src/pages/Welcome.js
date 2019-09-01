@@ -21,9 +21,10 @@ const Welcome = props => {
     const getStarted = (e) => {
         e.preventDefault();
         urlConstructor();
-        props.history.push("/trivia");
+        props.history.push("/trivia/1");
     }
 
+    // A list of trivia categories.
     const triviaCategories = [
         {
             'id': 17,

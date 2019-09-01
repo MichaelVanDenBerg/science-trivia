@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styledSanitize from 'styled-sanitize';
 import styled, { createGlobalStyle } from "styled-components";
 import { Switch, Route } from 'react-router-dom';
 import { animated, useTransition } from 'react-spring';
+import axios from 'axios';
 import useRouter from './useRouter';
 import Header from './components/Header'
 import Welcome from './pages/Welcome';
@@ -13,6 +14,9 @@ function App() {
   // Set local state using hooks.
   const [url, setUrl] = useState("");
   const [score, setScore] = useState(0);
+  const [useError, setError] = useState("");
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(1);
 
   // Update url received from Home.
   const updateUrl = (urlString) => {
@@ -29,6 +33,30 @@ function App() {
   const resetScore = () => {
     setScore(0);
   };
+
+  // Keep track of the current question.
+  const updateCurrentQuestion = () => {
+    const temp = currentQuestion + 1;
+    setCurrentQuestion(temp);
+  };
+
+  // Get the data from the API.
+  useEffect(() => {
+    axios.get(url)
+      .then(({ data }) => {
+        // Give error if there aren't enough questions.
+        if (data.response_code !== 0) {
+          setError("There aren't enough questions in this category with this difficulty level. Please try again.");
+        }
+        else {
+          setQuestions(data.results);
+          console.log(questions);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [questions, url]);
 
   // Get location from custom hook.
   const { location } = useRouter();
@@ -56,7 +84,7 @@ function App() {
         <Header />
         <Switch location={item}>
           <Route exact path='/' render={(props) => <Welcome {...props} updateUrl={updateUrl} />} />
-          <Route path='/trivia' render={(props) => <Trivia {...props} apiUrl={url} updateScore={updateScore} />} />
+          <Route path='/trivia/:id' render={(props) => <Trivia {...props} apiUrl={url} updateScore={updateScore} currentQuestion={currentQuestion} updateCurrentQuestion={updateCurrentQuestion} />} />
           <Route path='/result' render={(props) => <Result {...props} score={score} resetScore={resetScore} />} />
         </Switch>
       </SiteWrapper>

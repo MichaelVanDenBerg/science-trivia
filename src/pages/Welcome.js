@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 import styled from "styled-components";
-import ButtonNext from '../components/ButtonNext'
 
 const Welcome = props => {
     // Set local state using hooks.
@@ -13,39 +12,60 @@ const Welcome = props => {
         const cat = category ? `&category=${category}` : ``;
         const dif = difficulty ? `&difficulty=${difficulty}` : ``;
         const urlString = `https://opentdb.com/api.php?amount=10${cat}${dif}`;
-        console.log(urlString);
+
         // Update url in parent component.
         props.updateUrl(urlString);
     }
 
     // Initiate urlConstructor and change page.
     const getStarted = (e) => {
-        console.log("TEST");
         e.preventDefault();
         urlConstructor();
-        //props.history.push("/trivia");
+        props.history.push("/trivia");
     }
+
+    const triviaCategories = [
+        {
+            'id': 17,
+            'name': 'Science & Nature'
+        },
+        {
+            'id': 18,
+            'name': 'Science & Computers'
+        },
+        {
+            'id': 19,
+            'name': 'Science & Mathemathics'
+        },
+        {
+            'id': 30,
+            'name': 'Science & Gadgets'
+        },
+        {
+            'id': 23,
+            'name': 'Science & History'
+        },
+    ]
 
     return (
         <>
             <Hello>Hello</Hello>
             <SubTitle>Welcome to Science Trivia!</SubTitle>
-            <Intro>Select a category and press "Start".</Intro>
-            <button className="selector" onClick={() => setCategory(17)}>Science & Nature</button>
-            <button className="selector" onClick={() => setCategory(18)}>Science & Computers</button>
-            <button className="selector" onClick={() => setCategory(19)}>Science & Mathemathics</button>
-            <button className="selector" onClick={() => setCategory(30)}>Science & Gadgets</button>
-            <button className="selector" onClick={() => setCategory(23)}>Science & History</button>
+            <Intro>Select a category and difficulty and press "Start".</Intro>
+
+            {triviaCategories.map((category) =>
+                <button className="selector" key={category.id} onClick={() => setCategory(category.id)}>{category.name}</button>
+            )}
+
             <Select value={difficulty} onChange={e => setDifficulty(e.target.value)}>
                 <option value="">Random</option>
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
                 <option value="hard">Hard</option>
             </Select>
-            <h2>Cat: {category}</h2>
-            <h2>Dif: {difficulty}</h2>
+
             <div className="wrapper">
-                <button className="next" onClick={(e) => getStarted(e)}>Start</button>
+                <button className="next" onClick={(e) => getStarted(e)} disabled={category ? false : true}>Start</button>
             </div>
         </>);
 }
@@ -74,6 +94,10 @@ const Intro = styled.p`
 const Select = styled.select`
     height: 2.5rem;
     border-radius: 0;
+    color: #fffafa;
+    margin-bottom: 14px;
+    border: 4px solid #155799;
+    background: transparent;
 `
 
-export default Welcome;
+export default withRouter(Welcome);

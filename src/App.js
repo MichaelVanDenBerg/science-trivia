@@ -59,7 +59,6 @@ function App() {
           <Route path='/trivia' render={(props) => <Trivia {...props} apiUrl={url} updateScore={updateScore} />} />
           <Route path='/result' render={(props) => <Result {...props} score={score} resetScore={resetScore} />} />
         </Switch>
-        <h1>URL: {url}</h1>
       </SiteWrapper>
     </animated.div>
   ));
@@ -86,6 +85,18 @@ const GlobalStyle = createGlobalStyle`
     .selector {
       display: block;
       width: 100%;
+      color: #fffafa;
+      cursor: pointer;
+      opacity: 0.8;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      background: transparent;
+      border: 4px solid #155799;
+
+      &:hover {
+        opacity: 1;
+      }
     }
 
     .next {
@@ -97,6 +108,11 @@ const GlobalStyle = createGlobalStyle`
       font-weight: bold;
       color: #fffafa;
       background: linear-gradient(to right, #155799, #159957);
+
+      &:disabled {
+        opacity: 0.5;
+        background: linear-gradient(to right, #292E49, #536976, #BBD2C5);
+      }
     }
 
     .wrapper {

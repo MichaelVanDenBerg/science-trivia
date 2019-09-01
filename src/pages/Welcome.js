@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import styled from "styled-components";
+import axios from 'axios';
 
 const Welcome = props => {
     // Set local state using hooks.
+    const [url, setUrl] = useState("");
+    const [data, setData] = useState([]);
+    const [error, setError] = useState("");
+    const [questions, setQuestions] = useState([]);
     const [category, setCategory] = useState("");
     const [difficulty, setDifficulty] = useState("");
 
@@ -13,16 +18,54 @@ const Welcome = props => {
         const dif = difficulty ? `&difficulty=${difficulty}` : ``;
         const urlString = `https://opentdb.com/api.php?amount=10${cat}${dif}`;
 
-        // Update url in parent component.
-        props.updateUrl(urlString);
+        // Update url state.
+        setUrl(urlString);
     }
 
     // Initiate urlConstructor and change page.
     const getStarted = (e) => {
         e.preventDefault();
         urlConstructor();
-        props.history.push("/trivia/1");
+        //props.history.push("/trivia/1");
     }
+
+    // Get data from the API. Callback function.
+    useEffect(() => {
+        if (url) {
+            console.log(url);
+            axios.get(url)
+                .then(({ data }) => {
+                    // Give error if there aren't enough questions.
+                    if (data.response_code !== 0) {
+                        setError("There aren't enough questions in this category with this difficulty level. Please try again.");
+                    }
+                    else {
+                        setData(data.results);
+                        console.log(data.results);
+                    }
+                })
+                .then(() => {
+                    // Transform data so we can use it.
+                    function prepareQuestions(test) {
+                        console.log(test);
+                    }
+                    prepareQuestions("testtesttest");
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+    }, [url]);
+
+    // Get data from the API. Callback function.
+    useEffect(() => {
+        if (data) {
+            function prepareQuestions() {
+                console.log("asdada", data);
+            }
+            prepareQuestions(data);
+        }
+    }, [data, props.history]);
 
     // A list of trivia categories.
     const triviaCategories = [

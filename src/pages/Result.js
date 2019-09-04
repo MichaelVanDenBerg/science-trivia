@@ -1,13 +1,24 @@
 import React from 'react';
-import { Link } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 
-const Result = () => {
+const Result = ({ history, score, resetScore }) => {
+    // Restart the quiz.
+    const restart = () => {
+        // Reset score to zero.
+        resetScore();
+
+        // Return to the first page.
+        history.push(`/`);
+    }
+
     return (
         <>
-            <h1>Result</h1>
-            <Link to="/">Go to Home</Link>
+            <p>Congratulations! You've earned {score} out of 10 points!</p>
+            <div className="wrapper">
+                <button className="next" onClick={(e) => restart()}>Restart</button>
+            </div>
         </>
     );
 }
 
-export default Result;
+export default withRouter(Result);

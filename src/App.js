@@ -11,14 +11,13 @@ import Result from './pages/Result';
 
 function App() {
   // Set local state using hooks.
-  const [url, setUrl] = useState("");
   const [score, setScore] = useState(0);
-  const [questions, setQuestions] = useState([]);
+  const [trivia, setTrivia] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(1);
 
-  // Update url received from Home.
-  const updateUrl = (urlString) => {
-    setUrl(urlString);
+  // Update trivia data.
+  const updateTrivia = (questions) => {
+    setTrivia(questions);
   };
 
   // Keep track of correct answers.
@@ -36,13 +35,6 @@ function App() {
   const updateCurrentQuestion = () => {
     const temp = currentQuestion + 1;
     setCurrentQuestion(temp);
-  };
-
-  // Get the data from the API.
-  const getQuestions = async () => {
-
-    console.log(url);
-
   };
 
   // Get location from custom hook.
@@ -70,8 +62,8 @@ function App() {
         <GlobalStyle />
         <Header />
         <Switch location={item}>
-          <Route exact path='/' render={(props) => <Welcome {...props} updateUrl={updateUrl} getQuestions={getQuestions} />} />
-          <Route path='/trivia/:id' render={(props) => <Trivia {...props} apiUrl={url} updateScore={updateScore} currentQuestion={currentQuestion} updateCurrentQuestion={updateCurrentQuestion} />} />
+          <Route exact path='/' render={(props) => <Welcome {...props} updateTrivia={updateTrivia} />} />
+          <Route path='/trivia/:id' render={(props) => <Trivia {...props} updateScore={updateScore} trivia={trivia} updateCurrentQuestion={updateCurrentQuestion} />} />
           <Route path='/result' render={(props) => <Result {...props} score={score} resetScore={resetScore} />} />
         </Switch>
       </SiteWrapper>
@@ -111,6 +103,10 @@ const GlobalStyle = createGlobalStyle`
 
       &:hover {
         opacity: 1;
+      }
+
+      &:disabled {
+        opacity: 0.6;
       }
     }
 

@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import styled from "styled-components";
 import axios from 'axios';
 
 const Welcome = props => {
     // Set local state using hooks.
-    const [url, setUrl] = useState("");
-    const [data, setData] = useState([]);
     const [error, setError] = useState("");
-    const [questions, setQuestions] = useState([]);
     const [category, setCategory] = useState("");
     const [difficulty, setDifficulty] = useState("");
 
@@ -18,53 +15,78 @@ const Welcome = props => {
         const dif = difficulty ? `&difficulty=${difficulty}` : ``;
         const urlString = `https://opentdb.com/api.php?amount=10${cat}${dif}`;
 
-        // Update url state.
-        setUrl(urlString);
+        return urlString;
     }
 
-    // Initiate urlConstructor and change page.
-    const getStarted = () => {
-        urlConstructor();
-        //props.history.push("/trivia/1");
-    }
-
-    // Get data from the API. Callback function.
-    useEffect(() => {
-        if (url) {
-            console.log(url);
-            axios.get(url)
-                .then(({ data }) => {
-                    // Give error if there aren't enough questions.
-                    if (data.response_code !== 0) {
-                        setError("There aren't enough questions in this category with this difficulty level. Please try again.");
-                    }
-                    else {
-                        setData(data.results);
-                        console.log(data.results);
-                    }
-                })
-                .then(() => {
-                    // Transform data so we can use it.
-                    function prepareQuestions(test) {
-                        console.log(test);
-                    }
-                    prepareQuestions("testtesttest");
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+    // Construct the trivia array.
+    const triviaConstructor = ({ response_code, results }) => {
+        if (response_code > 0) {
+            setError("There aren't enough questions in this category with this difficulty level. Please try again.");
         }
-    }, [url]);
+        else {
+            const trivia = [];
+            results.forEach((item) => {
+                trivia.push(prepareQuestions(item));
+            });
+            return trivia;
+        }
+    }
 
-    // Get data from the API. Callback function.
-    useEffect(() => {
-        if (data.length > 0) {
-            function prepareQuestions() {
-                console.log("asdada", data);
+    // Prepare each question for the trivia array.
+    const prepareQuestions = ({ correct_answer, incorrect_answers, question, type }) => {
+        // Fill the question list and the correct answer.
+        let questionList = [{ text: correct_answer, correctAnswer: true }];
+
+        // Add the incorrect answers to the question list.
+        incorrect_answers.forEach((answer) => {
+            questionList.push({ text: answer, correctAnswer: false });
+        });
+
+        // Function for shuffling an array.
+        const shuffle = (a) => {
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]]
             }
-            prepareQuestions(data);
+            return a
+        };
+
+        // Shuffle the answerList for multiple choice questions.
+        if (type === "multiple") {
+            questionList = shuffle(questionList);
         }
-    }, [data]);
+
+        // Otherwise make sure true is always the first option.
+        else {
+            const temp = [];
+            questionList.forEach((item) => {
+                item.text === "True" ? temp.unshift(item) : temp.push(item);
+            });
+            questionList = temp;
+        }
+
+        // Add the question to the question list.
+        questionList.unshift({ question: question });
+
+        return questionList;
+    }
+
+    // Initiate trivia and change page.
+    const getStarted = async () => {
+        // Fetch data from API.
+        const { data } = await axios.get(urlConstructor());
+
+        // Transform data to something we can use.
+        const trivia = await triviaConstructor(data);
+
+        // Update state in parent.
+        props.updateTrivia(trivia);
+
+        // Change page and go to the first question.
+        if (!error) {
+            props.history.push("/trivia/1");
+        }
+    }
 
     // A list of trivia categories.
     const triviaCategories = [
@@ -106,6 +128,8 @@ const Welcome = props => {
                 <option value="medium">Medium</option>
                 <option value="hard">Hard</option>
             </Select>
+
+            {error ? <div className="error">{error}</div> : ""}
 
             <div className="wrapper">
                 <button className="next" onClick={(e) => getStarted(e)} disabled={category ? false : true}>Start</button>

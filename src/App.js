@@ -89,12 +89,22 @@ const GlobalStyle = createGlobalStyle`
       line-height: 1.5;
     }
 
+    button {
+      opacity: 0.8;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        opacity: 1;
+        box-shadow: 0px 0px 20px 2px rgba(0,0,0,0.5);
+      }
+    }
+
     .selector {
       display: block;
       width: 100%;
       color: #fffafa;
       cursor: pointer;
-      opacity: 0.8;
+      
       padding: 12px 16px;
       margin-bottom: 14px;
       border-radius: 10px;
@@ -122,6 +132,7 @@ const GlobalStyle = createGlobalStyle`
 
       &:disabled {
         opacity: 0.5;
+        box-shadow: none;
         background: linear-gradient(to right, #292E49, #536976, #BBD2C5);
       }
     }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import styled from "styled-components";
 import parse from 'html-react-parser';
+import styled from "styled-components";
 
 const Trivia = ({ match, trivia, history, updateScore }) => {
     // Set local state using hooks.
@@ -14,7 +14,6 @@ const Trivia = ({ match, trivia, history, updateScore }) => {
     // Populate local state with current question.
     useEffect(() => {
         if (trivia.length > 0) {
-            console.log(trivia);
             const current = trivia[match.params.id - 1];
             const { question } = current.shift();
             const answers = current;
@@ -26,8 +25,19 @@ const Trivia = ({ match, trivia, history, updateScore }) => {
         }
     }, [match.params.id, trivia])
 
+    // Reveal answers after click.
+    useEffect(() => {
+        const container = document.querySelector('#answers-container');
+
+        // Event listener for button clicked.
+        container.addEventListener('click', (e) => {
+            container.classList.add("reveal");
+            e.target.classList.add("clicked");
+        });
+    }) // Not optimal, should improve this.
+
     // Check if answer is correct.
-    const checkAnswer = (check) => {
+    const checkAnswer = (check, key) => {
         // Check for errors.
         if (check !== undefined) {
             setAnswered(true);
@@ -35,11 +45,10 @@ const Trivia = ({ match, trivia, history, updateScore }) => {
         // Update score for correct answer.
         if (check === true) {
             updateScore();
-            setDisabled(true);
+
         }
-        if (check === false) {
-            setDisabled(true);
-        }
+        // Disable buttons.
+        setDisabled(true);
     }
 
     // Go the next page/question.
@@ -62,15 +71,18 @@ const Trivia = ({ match, trivia, history, updateScore }) => {
             <p>Question #{match.params.id}</p>
             <p>{parse(currentQuestion)}</p>
 
-            {currentAnswers.map((item, key) => (
-                <button
-                    key={key}
-                    className="selector"
-                    disabled={disabled ? true : false}
-                    onClick={() => checkAnswer(item.correctAnswer)}>
-                    {parse(item.text)}
-                </button>
-            ))}
+            <Container id="answers-container">
+                {currentAnswers.map((item, key) => (
+                    <button
+                        id={key}
+                        key={key}
+                        className={`selector ${item.correctAnswer ? "correct" : "incorrect"}`}
+                        disabled={disabled ? true : false}
+                        onClick={() => checkAnswer(item.correctAnswer, key)}>
+                        {parse(item.text)}
+                    </button>
+                ))}
+            </Container>
 
             {error ? <><div className="error">{error}</div> <Link to="/">Go to Home</Link></> : ""}
 
@@ -80,5 +92,24 @@ const Trivia = ({ match, trivia, history, updateScore }) => {
         </>
     );
 }
+
+const Container = styled.div`
+    &.reveal {
+        button {
+            opacity: 0.4;
+
+            &.clicked {
+                opacity: 1;
+                color: #fffafa;
+            }
+            &.correct {
+                border-color: #00a693;
+            }
+            &.incorrect {
+                border-color: #da2c43;
+            }
+        }
+    }
+`;
 
 export default withRouter(Trivia);

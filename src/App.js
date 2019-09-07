@@ -92,10 +92,11 @@ const GlobalStyle = createGlobalStyle`
     button {
       opacity: 0.8;
       transition: all 0.2s ease-in-out;
+      box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.25);
 
       &:hover {
         opacity: 1;
-        box-shadow: 0px 0px 20px 2px rgba(0,0,0,0.5);
+        box-shadow: 0px 0px 20px 3px rgba(0,0,0,0.5);
       }
     }
 
@@ -116,7 +117,8 @@ const GlobalStyle = createGlobalStyle`
       }
 
       &:disabled {
-        opacity: 0.6;
+        color: #6699CC;
+        border-color: #002466;
       }
     }
 
@@ -125,6 +127,7 @@ const GlobalStyle = createGlobalStyle`
       border-radius: 40px;
       cursor: pointer;
       padding: 20px 50px;
+      margin-top: 35px
       font-size: 1.75em;
       font-weight: bold;
       color: #fffafa;
@@ -147,6 +150,7 @@ const GlobalStyle = createGlobalStyle`
 // Main site container.
 const SiteWrapper = styled.div`
   margin: 0 auto;
+  padding: 1em;
   max-width: 580px;
   min-height: 100vh;
 `;

@@ -139,7 +139,7 @@ const Welcome = props => {
 
 const Hello = styled.h2`
     margin: 0;
-    font-size: 10em;
+    font-size: 9em;
     font-weight: 800;
     text-align: center;
     letter-spacing: -10px;
@@ -162,6 +162,7 @@ const Select = styled.select`
     height: 2.5rem;
     border-radius: 0;
     color: #fffafa;
+    margin-top: 8px;
     margin-bottom: 14px;
     border: 4px solid #155799;
     background: transparent;

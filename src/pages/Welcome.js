@@ -139,7 +139,7 @@ const Welcome = props => {
 
 const Hello = styled.h2`
     margin: 0;
-    font-size: 9em;
+    font-size: 4em;
     font-weight: 800;
     text-align: center;
     letter-spacing: -10px;
@@ -147,6 +147,14 @@ const Hello = styled.h2`
     background: linear-gradient(to right, #155799, #159957);
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
+
+    @media only screen and (min-width: 360px) {
+        font-size: 6em;
+    }
+
+    @media only screen and (min-width: 560px) {
+        font-size: 9em;
+    }
 `
 
 const SubTitle = styled.p`

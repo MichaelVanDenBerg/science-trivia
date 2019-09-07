@@ -126,9 +126,9 @@ const GlobalStyle = createGlobalStyle`
       border: 0;
       border-radius: 40px;
       cursor: pointer;
-      padding: 20px 50px;
-      margin-top: 35px
-      font-size: 1.75em;
+      padding: 15px 40px;
+      margin-top: 30px
+      font-size: 1.5em;
       font-weight: bold;
       color: #fffafa;
       background: linear-gradient(to right, #155799, #159957);
